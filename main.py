@@ -63,13 +63,11 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
             if (not include_fleet_carrier) and is_fleet_carrier(row['Location']):
                 continue
             location = row['Location']
-            # ✂︎
-            # Ac/Dc Party Carrier (KHM-86M) | Robigo
             split_location = location.split('|')
             station = split_location[0]
-            # Remove the snip icon at the end of the line
             station = station[:-1]
             system = split_location[1]
+            # Remove the snip icon at the end of the line
             system_split = system.split(u"\u2702")
             system = system_split[0]
             row_data['location'] = {
