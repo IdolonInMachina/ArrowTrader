@@ -124,8 +124,12 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
     return commodity_data
 
 
+def get_profit(commodity):
+    return commodity['best_profit']
+
+
 def process_data(data, max_quantity, **kwargs):
-    ordered_best = []
+    processed = []
     pbar = tqdm(data)
     commodity_map = get_commodity_map()
     for commodity in pbar:
@@ -147,9 +151,11 @@ def process_data(data, max_quantity, **kwargs):
         best_profit = max_profit
         commodity['best_sell'] = curr_best_sell
         commodity['best_buy'] = curr_best_buy
-        if len(ordered_best) == 0 or best_profit > (calc_possible_profit(ordered_best[0]['best_sell'], max_quantity) - calc_possible_profit(ordered_best[0]['best_buy'], max_quantity)):
-            commodity['best_profit'] = best_profit
-            ordered_best.insert(0, commodity)
+        commodity['best_profit'] = best_profit
+        if not (commodity['best_sell'] == None or commodity['best_buy'] == None):
+            processed.append(commodity)
+    ordered_best = sorted(processed, key=get_profit)
+    ordered_best.reverse()
     return ordered_best
 
 
@@ -378,7 +384,6 @@ def run():
                 print(error)
         with open(file_path, 'w') as f:
             f.write(output)
-            print("Wrote output file")
         webbrowser.open(file_path)
 
 
