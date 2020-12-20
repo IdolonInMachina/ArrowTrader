@@ -12,10 +12,6 @@ def show_art():
     title_art()
     print(f"\tVersion: {__version__}\n")
     time.sleep(2)
-    dedication_art()
-    time.sleep(2)
-    attribution_art()
-    time.sleep(3)
 
 
 def title_art():
@@ -26,27 +22,6 @@ def title_art():
   >=====>>=>    >=>     >=>    >=>    >=>  >=> >>  >=>      >=>      >=>    >=>    >=>  >>  >=> >>===>>=>  >=>    
  >=>      >=>   >=>     >=>     >=>  >=>   >=>>  >=>=>      >=>      >=>     >=>   >=>  >>  >=> >>         >=>    
 >=>        >=> >==>    >==>       >=>     >==>    >==>      >=>     >==>      >==>>>==>  >=>>=>  >====>   >==> 
-'''
-    print('\n\n')
-    print(art)
-
-
-def dedication_art():
-    art = '''                                        
-.--       .  . ..-.,-..-.  .-.          
-|-.-..-.  |  |-|`-. / | |  |-..-. .-..-.
-' `-''    '-'' '`-''--`-'  '-'`-`-' '`-|
-                                    `-'
-'''
-    print('\n\n')
-    print(art)
-
-
-def attribution_art():
-    art = '''.-.     -.-  .    . 
-|< . .   | .-| .-.| 
-'-''-|  -'-`-'-`-''-
-   `-'              
 '''
     print('\n\n')
     print(art)
