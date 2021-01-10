@@ -308,7 +308,7 @@ def get_options():
     options = {
         'large_only': True,
         'include_fleet_carrier': False,
-        'max_quantity': 17800,
+        'max_quantity': 25000,
         'max_request_wait': 3,
         'num_results_to_display': 5,
         'log_file': True,
