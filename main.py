@@ -16,7 +16,7 @@ from pathlib import Path
 locale.setlocale(locale.LC_ALL, '')
 
 
-def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=25000, max_request_wait=3, **kwargs):
+def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=25000, max_request_wait=3, near_sol=True, **kwargs):
     commodity_data = []
     # sellmax, buymin
     pbar = tqdm(ids)
@@ -62,6 +62,14 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
                 continue
             if (not include_fleet_carrier) and is_fleet_carrier(row['Location']):
                 continue
+            if near_sol:
+                # Get the distance from Sol
+                dist = row['Distance']
+                split = dist.split(' ')
+                dist = split[0]
+                dist = dist.translate({ord(i): None for i in ','})
+                if float(dist) > 500:
+                    continue
             location = row['Location']
             split_location = location.split('|')
             station = split_location[0]
@@ -92,6 +100,14 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
                 continue
             if (not include_fleet_carrier) and is_fleet_carrier(row['Location']):
                 continue
+            if near_sol:
+                # Get the distance from Sol
+                dist = row['Distance']
+                split = dist.split(' ')
+                dist = split[0]
+                dist = dist.translate({ord(i): None for i in ','})
+                if float(dist) > 500:
+                    continue
             location = row['Location']
             # ✂︎
             # Ac/Dc Party Carrier (KHM-86M) | Robigo
@@ -296,6 +312,7 @@ def get_options():
         'max_request_wait': 3,
         'num_results_to_display': 5,
         'log_file': True,
+        'near_sol': True,
     }
     large_input = input("Restrict landing pad size to large: [Y/n]\t")
     if (large_input.lower() == 'n'):
@@ -335,6 +352,9 @@ def get_options():
                 options['num_results_to_display'] = num_results
         except ValueError:
             print("Error parsing input. Using default value.")
+    sol_input = input("Restrict to systems within 500 Ly of Sol? [Y/n]\t")
+    if (sol_input.lower() == 'n'):
+        options['near_sol'] = False
     log_input = input(
         "Create log file? Directory will be created if it does not exist: [Y/n]\t")
     if log_input.lower() == 'n':
