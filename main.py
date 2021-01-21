@@ -22,8 +22,12 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
     pbar = tqdm(ids)
     commodity_map = get_commodity_map()
     for commodity_id in pbar:
+        try:
+            commodity_name = commodity_map[int(commodity_id)]
+        except KeyError:
+            commodity_name = f"Unknown Commodity - ID: {commodity_id}"
         pbar.set_description(
-            f"Downloading and formatting data for {commodity_map[int(commodity_id)]}")
+            f"Downloading and formatting data for {commodity_name}")
         # https://inara.cz/ajaxaction.php?act=goodsdata&refname=sell&refid=10269&refid2=0
         buy_url = f'https://inara.cz/ajaxaction.php?act=goodsdata&refname=buymin&refid={commodity_id}&refid2=0'
         sell_url = f'https://inara.cz/ajaxaction.php?act=goodsdata&refname=sellmax&refid={commodity_id}&refid2=0'
@@ -321,7 +325,7 @@ def get_options():
     if (carrier_input.lower() == 'y'):
         options['include_fleet_carrier']: True
     quantity_input = input(
-        "What is the maximum amount of cargo units you can hold: ( > 0) [17800]\t")
+        f"What is the maximum amount of cargo units you can hold: ( > 0) [{options['max_quantity']}]\t")
     if len(quantity_input) > 0:
         try:
             num_quantity = int(quantity_input)
