@@ -56,12 +56,15 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
         for index, row in buy_df.iterrows():
             price = row['Buy price']
             price = price[:-3]
-            row_data = {
-                'price': price.replace(',', ''),
-                'quantity': row['QTY'],
-                'updated': row['Updated'],
-                'range': row['OPR'],
-            }
+            try:
+                row_data = {
+                    'price': price.replace(',', ''),
+                    'quantity': int(row['QTY']),
+                    'updated': row['Updated'],
+                    'range': row['OPR'],
+                }
+            except ValueError:
+                continue
             if (large_only and row['Pad'] != 'L'):
                 continue
             if (not include_fleet_carrier) and is_fleet_carrier(row['Location']):
@@ -94,12 +97,15 @@ def get_data(ids, large_only=True, include_fleet_carrier=False, max_quantity=250
         for index, row in sell_df.iterrows():
             price = row['Sell price']
             price = price[:-3]
-            row_data = {
-                'price': price.replace(',', ''),
-                'quantity': row['QTY'],
-                'updated': row['Updated'],
-                'range': row['OPR'],
-            }
+            try:
+                row_data = {
+                    'price': price.replace(',', ''),
+                    'quantity': int(row['QTY']),
+                    'updated': row['Updated'],
+                    'range': row['OPR'],
+                }
+            except ValueError:
+                continue
             if (large_only and row['Pad'] != 'L'):
                 continue
             if (not include_fleet_carrier) and is_fleet_carrier(row['Location']):
@@ -278,7 +284,7 @@ def get_commodities():
     text = r.text
     soup = Soup(text, 'html.parser')
     attrs = {
-        'href': re.compile(r'/galaxy-commodity/')
+        'href': re.compile(r'/commodity/')
     }
     links = soup.find_all('a', attrs=attrs)
     commodity_ids = []
@@ -302,8 +308,7 @@ def get_commodity_map():
     commodity_map = {}
     for option in search_commodities.find_all('option'):
         commodity_id = option['value']
-        span = option.find('span')
-        commodity_name = span.string
+        commodity_name = option.text
         commodity_map[int(commodity_id)] = commodity_name
     return commodity_map
 
@@ -406,8 +411,8 @@ def run():
             except OSError as error:
                 print("Unable to rename previous log file")
                 print(error)
-        with open(file_path, 'w') as f:
-            f.write(output)
+        with open(file_path, 'wb') as f:
+            f.write(output.encode('utf-8'))
         webbrowser.open(file_path)
 
 
